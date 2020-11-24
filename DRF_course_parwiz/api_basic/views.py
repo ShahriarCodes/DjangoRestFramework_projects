@@ -1,17 +1,52 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from django.http import Http404
+from rest_framework import mixins
+from rest_framework import generics
 
 from .models import Article
 from .serializers import ArticleSerializer
 
 
 # Create your views here.
+
+# same as ArticleAPIView (class based view)
+class GenericAPIView(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+    # *args, **kwargs can also be omitted in case of basic view of form submission
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+# same as ArticleDetailView (class based view)
+class GenericAPIDetailView(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 # same as articleList (function based view)
 class ArticleAPIView(APIView):
@@ -32,6 +67,7 @@ class ArticleAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         # if not valid return error status
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # same as articleDetail (function based view)
 class ArticleDetailView(APIView):
@@ -59,7 +95,6 @@ class ArticleDetailView(APIView):
         article = self.get_object(pk)
         article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 
@@ -91,6 +126,7 @@ def articleList(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         # if not valid return error status
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # view only specific article
 @api_view(['GET', 'PUT', 'DELETE'])
