@@ -18,7 +18,8 @@ Open the file snippets/serializers.py again, and replace the SnippetSerializer
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ['id', 'title', 'author']
+        # fields = ['id', 'title', 'author']
+        fields = '__all__'
 
 '''
 python manage.py shell

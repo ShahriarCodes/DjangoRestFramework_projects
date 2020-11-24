@@ -62,7 +62,7 @@ def articleDetatil(request, pk):
     # check if request passes the POST method (for update)
     elif request.method == 'PUT':
         # pass the data to serializer
-        serializer = ArticleSerializer(data=data)
+        serializer = ArticleSerializer(article, data=request.data)
         # check if the data is valid
         if serializer.is_valid():
             # save the data
