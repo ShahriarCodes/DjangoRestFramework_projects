@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'blog.apps.BlogConfig',
     'blog_api.apps.BlogApiConfig',
+
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,7 @@ ROOT_URLCONF = 'DRF_course_very_academy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
