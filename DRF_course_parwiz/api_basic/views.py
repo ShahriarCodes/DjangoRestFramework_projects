@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from rest_framework import mixins
 from rest_framework import generics
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Article
 from .serializers import ArticleSerializer
 
@@ -21,6 +24,10 @@ class GenericAPIView(mixins.ListModelMixin,
 
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+
+    # authentication credentials
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
     # *args, **kwargs can also be omitted in case of basic view of form submission
     def get(self, request, *args, **kwargs):
@@ -37,6 +44,10 @@ class GenericAPIDetailView(mixins.RetrieveModelMixin,
                     generics.GenericAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+
+    # authentication credentials 
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
